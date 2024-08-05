@@ -1,0 +1,35 @@
+version: '3'
+services:
+  nestapp:
+    container_name: nestapp
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - '9090:3000'
+    volumes:
+      - ./home/media:/app/media
+    networks:
+      - my-app-net
+  mongodb:
+    image: mongo
+    volumes:
+      - ./home/mongodb_data:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - my-app-net
+  redis:
+    image: redislabs/redisearch
+    volumes:
+      - /home/redis_data:/data
+    networks:
+      - my-app-net
+    ports:
+      - 6349:6379
+networks:
+  my-app-net:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: "20.1.0.0/16"
